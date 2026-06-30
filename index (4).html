@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>경기도 스마트공장 구축 지원기업 조회</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #0d62d0;
+      --success: #34a853;
+      --success-dark: #2c8c46;
+      --bg: #eef1f6;
+      --card-bg: #ffffff;
+      --border: #e1e4e9;
+      --text: #202124;
+      --text-light: #5f6368;
+      --header-bg: #e8f0fe;
+      --stripe: #f8f9fb;
+      --hover: #eef4ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+      margin: 0;
+      padding: 24px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1500px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border-radius: 14px;
+      box-shadow: 0 2px 14px rgba(20, 30, 60, 0.06);
+      padding: 28px 32px;
+    }
+
+    .page-header {
+      margin-bottom: 22px;
+      padding-bottom: 16px;
+      border-bottom: 3px solid var(--primary);
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+      color: var(--text);
+    }
+    h2::before { content: '🏭'; margin-right: 8px; }
+
+    h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      color: var(--text);
+    }
+    h3::before { content: '🧾'; margin-right: 6px; }
+
+    .page-header p {
+      margin: 6px 0 0;
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .section-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 36px 0 22px;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      background: #f8f9fb;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+    }
+
+    .filter-bar label,
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-light);
+    }
+
+    select, button, input[type="text"] {
+      padding: 9px 16px;
+      font-size: 14px;
+      font-family: inherit;
+      border-radius: 6px;
+      border: 1px solid #cfd4da;
+      transition: all 0.15s ease;
+    }
+
+    select, input[type="text"] {
+      background: #fff;
+      color: var(--text);
+    }
+    select { min-width: 120px; cursor: pointer; }
+    input[type="text"] { min-width: 260px; }
+
+    select:hover, input[type="text"]:hover { border-color: var(--primary); }
+    select:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26,115,232,0.15);
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    }
+
+    #searchBtn, #bizSearchBtn { background: var(--primary); }
+    #searchBtn:hover:not(:disabled), #bizSearchBtn:hover:not(:disabled) {
+      background: var(--primary-dark);
+      box-shadow: 0 3px 8px rgba(26,115,232,0.35);
+      transform: translateY(-1px);
+    }
+
+    #downloadBtn { background: var(--success); }
+    #downloadBtn:hover:not(:disabled) {
+      background: var(--success-dark);
+      box-shadow: 0 3px 8px rgba(52,168,83,0.35);
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      background: #d4d8dd !important;
+      color: #fff;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* 지원년도 다중 선택 드롭다운 */
+    .ms-wrap { position: relative; }
+    .ms-btn {
+      background: #fff;
+      color: var(--text);
+      min-width: 150px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-weight: 400;
+    }
+    .ms-btn:hover { border-color: var(--primary); }
+    .ms-arrow { font-size: 11px; color: var(--text-light); }
+    .ms-panel {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      min-width: 160px;
+      max-height: 260px;
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.14);
+      padding: 6px;
+      z-index: 20;
+    }
+    .ms-panel.open { display: block; }
+    .ms-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .ms-option:hover { background: var(--hover); }
+    .ms-option input { cursor: pointer; }
+    .ms-divider { height: 1px; background: var(--border); margin: 4px 2px; }
+
+    .loading-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-light);
+      font-size: 13px;
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid #d4d8dd;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .result-count {
+      display: none;
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 12px;
+      padding: 6px 14px;
+      background: var(--header-bg);
+      color: var(--primary-dark);
+      border-radius: 20px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 64px 20px;
+      color: var(--text-light);
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      font-size: 14px;
+      background: #fafbfc;
+    }
+    .empty-state .icon { font-size: 38px; margin-bottom: 12px; opacity: 0.6; }
+    .empty-state strong { color: var(--primary); }
+
+    .table-wrap {
+      display: none;
+      overflow: auto;
+      max-height: 70vh;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+
+    th, td {
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      padding: 10px 12px;
+      vertical-align: top;
+      word-break: break-word;
+      white-space: normal;
+    }
+    th:last-child, td:last-child { border-right: none; }
+
+    th {
+      background: var(--header-bg);
+      color: var(--primary-dark);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      text-align: center;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: inset 0 -2px 0 var(--primary);
+    }
+
+    tbody tr:nth-child(even) { background: var(--stripe); }
+    tbody tr:hover { background: var(--hover); }
+
+    td.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    td.idx { text-align: center; white-space: nowrap; color: var(--text-light); font-weight: 700; }
+
+    th.col-xl, td.col-xl { min-width: 280px; }
+    th.col-md, td.col-md { min-width: 140px; }
+    td.col-xl, td.col-md { padding: 0; }
+    .cell-clamp {
+      padding: 10px 12px;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.4;
+    }
+    th.col-amt, td.col-amt { min-width: 130px; }
+    td.col-source { white-space: nowrap; }
+
+    /* 지원이력 탭 */
+    .biz-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: -1px;
+      position: relative;
+      z-index: 1;
+    }
+    .biz-tab {
+      padding: 10px 22px;
+      font-size: 14px;
+      font-family: inherit;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      background: #f0f2f5;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      box-shadow: none;
+      transform: none;
+    }
+    .biz-tab:hover:not(.active) { background: #e4e8ef; color: var(--text); }
+    .biz-tab.active {
+      background: #f8f9fb;
+      color: var(--primary-dark);
+      border-color: var(--border);
+      border-bottom: 1px solid #f8f9fb;
+    }
+    .biz-tabs + .filter-bar { border-top-left-radius: 0; background: #f8f9fb; }
+    .biz-input-wrap { display: flex; }
+
+    /* 에러 배너 */
+    .error-banner {
+      display: none;
+      background: #fce8e6;
+      border: 1px solid #f5c6cb;
+      color: #c5221f;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="page-header">
+      <h2>경기도 스마트공장 구축 지원기업 조회</h2>
+      <p>사업구분, 지역, 지원년도를 선택한 후 조회 버튼을 클릭하면 지원기업 현황을 확인할 수 있습니다.</p>
+    </div>
+
+    <div class="filter-bar">
+      <label>사업구분
+        <select id="bizTypeSelect" required>
+          <option value="" disabled selected>선택하세요</option>
+          <option value="경기도형">경기도형</option>
+          <option value="중기부형">중기부형</option>
+        </select>
+      </label>
+
+      <label>지역
+        <select id="regionSelect"><option value="전체">전체</option></select>
+      </label>
+
+      <div class="filter-group">
+        지원년도
+        <div class="ms-wrap" id="yearMs">
+          <button type="button" class="ms-btn" onclick="toggleYearPanel(event)">
+            <span id="yearMsBtnLabel">전체</span>
+            <span class="ms-arrow">▾</span>
+          </button>
+          <div class="ms-panel" id="yearMsPanel">
+            <label class="ms-option">
+              <input type="checkbox" id="yearAllCheckbox" checked onchange="onYearAllChange(this)"> 전체
+            </label>
+            <div class="ms-divider"></div>
+          </div>
+        </div>
+      </div>
+
+      <button id="searchBtn" onclick="search()" disabled>🔍 조회</button>
+      <button id="downloadBtn" onclick="downloadExcel()" disabled>⬇ 엑셀 다운로드</button>
+      <span id="loading" class="loading-inline"><span class="spinner"></span>불러오는 중...</span>
+    </div>
+
+    <div id="errorBanner" class="error-banner"></div>
+    <div id="resultCount" class="result-count"></div>
+
+    <div id="emptyState" class="empty-state">
+      <div class="icon">🔍</div>
+      조건을 선택한 후 <strong>조회</strong> 버튼을 클릭하면 결과가 표시됩니다.
+    </div>
+
+    <div class="table-wrap" id="tableWrap">
+      <table id="resultTable">
+        <thead><tr id="headerRow"></tr></thead>
+        <tbody id="bodyRows"></tbody>
+      </table>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="page-header">
+      <h3>지원이력 조회</h3>
+      <p>사업자번호 또는 기업명으로 지원이력을 확인할 수 있습니다.</p>
+    </div>
+
+    <div class="biz-tabs">
+      <button class="biz-tab active" id="tabBizNo" onclick="switchTab('no')">사업자번호로 조회</button>
+      <button class="biz-tab" id="tabBizName" onclick="switchTab('name')">기업명으로 조회</button>
+    </div>
+
+    <div class="filter-bar">
+      <div id="inputBizNo" class="biz-input-wrap">
+        <input type="text" id="bizInput" style="min-width:480px;" placeholder="사업자번호 입력 (예: 123-45-67890 또는 1234567890)">
+      </div>
+      <div id="inputBizName" class="biz-input-wrap" style="display:none;">
+        <input type="text" id="bizNameInput" style="min-width:480px;" placeholder="기업명 입력 (예: 경기산업 — 일부만 입력해도 조회됩니다)">
+      </div>
+      <button id="bizSearchBtn" onclick="searchByBiz()">🔍 조회</button>
+      <span id="bizLoading" class="loading-inline" style="display:none;"><span class="spinner"></span>조회 중...</span>
+    </div>
+
+    <div id="bizErrorBanner" class="error-banner"></div>
+    <div id="bizResultCount" class="result-count"></div>
+
+    <div id="bizEmptyState" class="empty-state">
+      <div class="icon">🧾</div>
+      사업자번호 또는 기업명을 입력한 후 <strong>조회</strong> 버튼을 클릭하면 지원이력이 표시됩니다.
+    </div>
+
+    <div class="table-wrap" id="bizTableWrap">
+      <table id="bizResultTable">
+        <thead><tr id="bizHeaderRow"></tr></thead>
+        <tbody id="bizBodyRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // =====================================================
+    // ★ Apps Script 배포 URL을 여기에 입력하세요 ★
+    // 예: https://script.google.com/macros/s/XXXXXXX/exec
+    // =====================================================
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxwU1cJgvCcH1cxBBagUZnAczWoLNkc2MPgGKXKUZxtQlrmk-JMcOCI-Y9Z1MV8iisnrA/exec';
+
+    // 경기도 31개 시군 (가나다순)
+    const REGIONS = [
+      '가평','고양','과천','광명','광주','구리','군포','김포','남양주','동두천',
+      '부천','성남','수원','시흥','안산','안성','안양','양주','양평','여주',
+      '연천','오산','용인','의왕','의정부','이천','파주','평택','포천','하남','화성'
+    ];
+
+    let currentHeaders = [];
+    let currentRows = [];
+
+    // =====================================================
+    // 공통 API 호출 함수
+    // =====================================================
+    async function callApi(params) {
+      const url = new URL(API_URL);
+      Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+      const res = await fetch(url.toString());
+      if (!res.ok) throw new Error('서버 응답 오류: ' + res.status);
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      return data;
+    }
+
+    // =====================================================
+    // 초기화
+    // =====================================================
+    window.onload = async function () {
+      // 지역 드롭다운
+      const regionSel = document.getElementById('regionSelect');
+      REGIONS.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = r;
+        regionSel.appendChild(opt);
+      });
+
+      setLoading(true);
+      try {
+        const data = await callApi({ action: 'getFilterOptions' });
+        onFiltersLoaded(data);
+      } catch (e) {
+        showError('errorBanner', '초기 데이터 로드 실패: ' + e.message);
+        setLoading(false);
+      }
+    };
+
+    function onFiltersLoaded(data) {
+      const yearPanel = document.getElementById('yearMsPanel');
+      data.years.forEach(y => {
+        const label = document.createElement('label');
+        label.className = 'ms-option';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.className = 'year-option';
+        input.value = y;
+        input.onchange = function () { onYearOptionChange(this); };
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(y));
+        yearPanel.appendChild(label);
+      });
+      currentHeaders = data.headers;
+      setLoading(false);
+      document.getElementById('searchBtn').disabled = false;
+    }
+
+    // =====================================================
+    // 로딩 / 에러 상태
+    // =====================================================
+    function setLoading(on) {
+      document.getElementById('loading').style.display = on ? 'inline-flex' : 'none';
+      document.getElementById('searchBtn').disabled = on;
+    }
+
+    function setBizLoading(on) {
+      document.getElementById('bizLoading').style.display = on ? 'inline-flex' : 'none';
+      document.getElementById('bizSearchBtn').disabled = on;
+    }
+
+    function showError(bannerId, msg) {
+      const el = document.getElementById(bannerId);
+      el.textContent = '⚠️ ' + msg;
+      el.style.display = 'block';
+    }
+
+    function hideError(bannerId) {
+      document.getElementById(bannerId).style.display = 'none';
+    }
+
+    // =====================================================
+    // 지원년도 다중 선택 드롭다운
+    // =====================================================
+    function toggleYearPanel(e) {
+      e.stopPropagation();
+      document.getElementById('yearMsPanel').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function (e) {
+      const wrap = document.getElementById('yearMs');
+      if (wrap && !wrap.contains(e.target)) {
+        document.getElementById('yearMsPanel').classList.remove('open');
+      }
+    });
+
+    function onYearAllChange(cb) {
+      if (cb.checked) {
+        document.querySelectorAll('.year-option').forEach(el => { el.checked = false; });
+      }
+      updateYearButtonLabel();
+    }
+
+    function onYearOptionChange(cb) {
+      const allCb = document.getElementById('yearAllCheckbox');
+      if (cb.checked) allCb.checked = false;
+      const anyChecked = document.querySelectorAll('.year-option:checked').length > 0;
+      if (!anyChecked) allCb.checked = true;
+      updateYearButtonLabel();
+    }
+
+    function updateYearButtonLabel() {
+      const allCb = document.getElementById('yearAllCheckbox');
+      const label = document.getElementById('yearMsBtnLabel');
+      if (allCb.checked) { label.textContent = '전체'; return; }
+      const selected = Array.from(document.querySelectorAll('.year-option:checked')).map(el => el.value);
+      label.textContent = selected.join(', ');
+    }
+
+    function getSelectedYears() {
+      const allCb = document.getElementById('yearAllCheckbox');
+      if (allCb.checked) return ['전체'];
+      const selected = Array.from(document.querySelectorAll('.year-option:checked')).map(el => el.value);
+      return selected.length ? selected : ['전체'];
+    }
+
+    // =====================================================
+    // 테이블 렌더링 공통
+    // =====================================================
+    function getColWidthClass(header) {
+      if (header.indexOf('재원') !== -1) return 'col-source';
+      if (/주소|지원내용|과제명/.test(header)) return 'col-xl';
+      if (/기업명|지원유형|업종|업태/.test(header)) return 'col-md';
+      if (/사업비총계|지원금|부담금/.test(header)) return 'col-amt';
+      return '';
+    }
+
+    function buildTable(headers, rows, headerRowEl, bodyEl) {
+      const idxCol = headers.indexOf('구분');
+      if (idxCol !== -1) {
+        rows.forEach((row, i) => { row[idxCol] = i + 1; });
+      }
+
+      const numericCols = new Set();
+      headers.forEach((h, idx) => {
+        if (/원|총계|지원금|부담금/.test(h) && !/년도/.test(h)) numericCols.add(idx);
+      });
+
+      headerRowEl.innerHTML = '';
+      headers.forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = h;
+        const wc = getColWidthClass(h);
+        if (wc) th.classList.add(wc);
+        headerRowEl.appendChild(th);
+      });
+
+      bodyEl.innerHTML = '';
+      rows.forEach(row => {
+        const tr = document.createElement('tr');
+        row.forEach((cell, idx) => {
+          const td = document.createElement('td');
+          const wc = getColWidthClass(headers[idx]);
+          if (wc) td.classList.add(wc);
+
+          if (numericCols.has(idx) && typeof cell === 'number') {
+            td.textContent = cell.toLocaleString('ko-KR');
+            td.classList.add('num');
+          } else if (idx === idxCol) {
+            td.textContent = cell;
+            td.classList.add('idx');
+          } else if (wc === 'col-xl' || wc === 'col-md') {
+            const div = document.createElement('div');
+            div.className = 'cell-clamp';
+            div.textContent = cell;
+            div.title = String(cell);
+            td.appendChild(div);
+          } else {
+            td.textContent = cell;
+          }
+          tr.appendChild(td);
+        });
+        bodyEl.appendChild(tr);
+      });
+    }
+
+    // =====================================================
+    // 지역/지원년도 조회
+    // =====================================================
+    async function search() {
+      const bizType = document.getElementById('bizTypeSelect').value;
+      if (!bizType) { alert('사업구분을 선택해주세요.'); return; }
+      const region = document.getElementById('regionSelect').value;
+      const years = getSelectedYears();
+      document.getElementById('yearMsPanel').classList.remove('open');
+      hideError('errorBanner');
+      setLoading(true);
+
+      try {
+        const data = await callApi({
+          action: 'searchData',
+          bizType: bizType,
+          region: region,
+          years: years.join(',')
+        });
+        renderResults(data);
+      } catch (e) {
+        showError('errorBanner', '조회 실패: ' + e.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    function renderResults(data) {
+      currentHeaders = data.headers;
+      currentRows = data.rows;
+
+      buildTable(currentHeaders, currentRows,
+        document.getElementById('headerRow'),
+        document.getElementById('bodyRows'));
+
+      document.getElementById('resultCount').textContent = '검색 결과: ' + currentRows.length + '건';
+      document.getElementById('resultCount').style.display = 'inline-block';
+      document.getElementById('downloadBtn').disabled = currentRows.length === 0;
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('tableWrap').style.display = 'block';
+    }
+
+    function downloadExcel() {
+      if (currentRows.length === 0) return;
+      const wsData = [currentHeaders, ...currentRows];
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, '조회결과');
+      const bizType = document.getElementById('bizTypeSelect').value;
+      const region = document.getElementById('regionSelect').value;
+      const years = getSelectedYears();
+      const yearLabel = years.includes('전체') ? '전체' : years.join('_');
+      const filename = '경기도형스마트공장_' + bizType + '_' + region + '_' + yearLabel + '.xlsx';
+      XLSX.writeFile(wb, filename);
+    }
+
+    // =====================================================
+    // 사업자번호 / 기업명 지원이력 조회
+    // =====================================================
+    let bizSearchMode = 'no';
+
+    function switchTab(mode) {
+      bizSearchMode = mode;
+      document.getElementById('tabBizNo').classList.toggle('active', mode === 'no');
+      document.getElementById('tabBizName').classList.toggle('active', mode === 'name');
+      document.getElementById('inputBizNo').style.display = mode === 'no' ? 'flex' : 'none';
+      document.getElementById('inputBizName').style.display = mode === 'name' ? 'flex' : 'none';
+      hideError('bizErrorBanner');
+      document.getElementById('bizResultCount').style.display = 'none';
+      document.getElementById('bizTableWrap').style.display = 'none';
+      document.getElementById('bizEmptyState').style.display = 'block';
+    }
+
+    async function searchByBiz() {
+      hideError('bizErrorBanner');
+      setBizLoading(true);
+
+      try {
+        let data;
+        if (bizSearchMode === 'no') {
+          const input = document.getElementById('bizInput').value.trim();
+          if (!input) { alert('사업자번호를 입력해주세요.'); setBizLoading(false); return; }
+          data = await callApi({ action: 'searchByBizNo', bizNo: input });
+        } else {
+          const input = document.getElementById('bizNameInput').value.trim();
+          if (!input) { alert('기업명을 입력해주세요.'); setBizLoading(false); return; }
+          data = await callApi({ action: 'searchByBizName', bizName: input });
+        }
+        renderBizResults(data);
+      } catch (e) {
+        showError('bizErrorBanner', '조회 실패: ' + e.message);
+      } finally {
+        setBizLoading(false);
+      }
+    }
+
+    function renderBizResults(data) {
+      buildTable(data.headers, data.rows,
+        document.getElementById('bizHeaderRow'),
+        document.getElementById('bizBodyRows'));
+      document.getElementById('bizResultCount').textContent = '조회 결과: ' + data.rows.length + '건';
+      document.getElementById('bizResultCount').style.display = 'inline-block';
+      document.getElementById('bizEmptyState').style.display = 'none';
+      document.getElementById('bizTableWrap').style.display = 'block';
+    }
+
+    // Enter 키로 조회
+    document.addEventListener('DOMContentLoaded', function () {
+      ['bizInput', 'bizNameInput'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('keydown', function (e) { if (e.key === 'Enter') searchByBiz(); });
+      });
+    });
+  </script>
+</body>
+</html>
