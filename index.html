@@ -439,10 +439,11 @@
 
   <script>
     // =====================================================
-    // ★ Apps Script 배포 URL을 여기에 입력하세요 ★
-    // 예: https://script.google.com/macros/s/XXXXXXX/exec
+    // 데이터는 같은 폴더의 data.json 파일에서 읽어옵니다.
+    // (Apps Script 호출 없음 — 방화벽 문제 없음)
     // =====================================================
-    const API_URL = 'https://script.google.com/macros/s/AKfycbxwU1cJgvCcH1cxBBagUZnAczWoLNkc2MPgGKXKUZxtQlrmk-JMcOCI-Y9Z1MV8iisnrA/exec';
+    const DATA_URL = './data.json';
+    let RAW_DATA = null; // { headers, rows } 전체 원본 데이터 (최초 1회 로드)
 
     // 경기도 31개 시군 (가나다순)
     const REGIONS = [
@@ -455,16 +456,64 @@
     let currentRows = [];
 
     // =====================================================
-    // 공통 API 호출 함수
+    // 데이터 로드 (최초 1회)
     // =====================================================
-    async function callApi(params) {
-      const url = new URL(API_URL);
-      Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-      const res = await fetch(url.toString());
-      if (!res.ok) throw new Error('서버 응답 오류: ' + res.status);
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      return data;
+    async function loadData() {
+      if (RAW_DATA) return RAW_DATA;
+      const res = await fetch(DATA_URL);
+      if (!res.ok) throw new Error('데이터 파일을 불러올 수 없습니다 (' + res.status + ')');
+      RAW_DATA = await res.json();
+      return RAW_DATA;
+    }
+
+    // =====================================================
+    // 로컬 필터링 함수들 (구 Apps Script 로직을 그대로 재현)
+    // =====================================================
+    function localGetFilterOptions(data) {
+      const { headers, rows } = data;
+      const yearIdx = headers.indexOf('지원년도');
+      const yearSet = new Set();
+      rows.forEach(r => { if (r[yearIdx] !== '' && r[yearIdx] != null) yearSet.add(String(r[yearIdx])); });
+      const years = Array.from(yearSet).sort((a, b) => Number(b) - Number(a));
+      return { headers, years };
+    }
+
+    function localSearchData(data, bizType, region, years) {
+      const { headers, rows } = data;
+      const bizTypeIdx = headers.findIndex(h => h.indexOf('사업구분') !== -1);
+      const regionIdx = headers.indexOf('지역');
+      const yearIdx = headers.indexOf('지원년도');
+      const yearList = (years || []).map(String);
+      const yearAll = yearList.length === 0 || yearList.indexOf('전체') !== -1;
+
+      const filtered = rows.filter(r => {
+        const bizTypeOk = bizTypeIdx === -1 ? true : (String(r[bizTypeIdx]).indexOf(bizType) !== -1);
+        const regionOk = (!region || region === '전체') ? true : (r[regionIdx] === region);
+        const yearOk = yearAll ? true : (yearList.indexOf(String(r[yearIdx])) !== -1);
+        return bizTypeOk && regionOk && yearOk;
+      }).map(r => r.slice());
+
+      return { headers, rows: filtered };
+    }
+
+    function localSearchByBizNo(data, bizNo) {
+      const { headers, rows } = data;
+      const bizIdx = headers.findIndex(h => h.indexOf('사업자') !== -1 && h.indexOf('번호') !== -1);
+      if (bizIdx === -1) throw new Error('헤더에서 "사업자번호" 컬럼을 찾을 수 없습니다.');
+      const target = String(bizNo || '').replace(/[^0-9]/g, '');
+      if (!target) return { headers, rows: [] };
+      const filtered = rows.filter(r => String(r[bizIdx] || '').replace(/[^0-9]/g, '') === target).map(r => r.slice());
+      return { headers, rows: filtered };
+    }
+
+    function localSearchByBizName(data, bizName) {
+      const { headers, rows } = data;
+      const nameIdx = headers.findIndex(h => h.indexOf('기업명') !== -1 || h.indexOf('사업자명') !== -1);
+      if (nameIdx === -1) throw new Error('헤더에서 "기업명" 또는 "사업자명" 컬럼을 찾을 수 없습니다.');
+      const keyword = String(bizName || '').replace(/\s/g, '').toLowerCase();
+      if (!keyword) return { headers, rows: [] };
+      const filtered = rows.filter(r => String(r[nameIdx] || '').replace(/\s/g, '').toLowerCase().indexOf(keyword) !== -1).map(r => r.slice());
+      return { headers, rows: filtered };
     }
 
     // =====================================================
@@ -482,8 +531,9 @@
 
       setLoading(true);
       try {
-        const data = await callApi({ action: 'getFilterOptions' });
-        onFiltersLoaded(data);
+        const data = await loadData();
+        const filterOpts = localGetFilterOptions(data);
+        onFiltersLoaded(filterOpts);
       } catch (e) {
         showError('errorBanner', '초기 데이터 로드 실패: ' + e.message);
         setLoading(false);
@@ -650,13 +700,9 @@
       setLoading(true);
 
       try {
-        const data = await callApi({
-          action: 'searchData',
-          bizType: bizType,
-          region: region,
-          years: years.join(',')
-        });
-        renderResults(data);
+        const data = await loadData();
+        const result = localSearchData(data, bizType, region, years);
+        renderResults(result);
       } catch (e) {
         showError('errorBanner', '조회 실패: ' + e.message);
       } finally {
@@ -715,17 +761,18 @@
       setBizLoading(true);
 
       try {
-        let data;
+        const data = await loadData();
+        let result;
         if (bizSearchMode === 'no') {
           const input = document.getElementById('bizInput').value.trim();
           if (!input) { alert('사업자번호를 입력해주세요.'); setBizLoading(false); return; }
-          data = await callApi({ action: 'searchByBizNo', bizNo: input });
+          result = localSearchByBizNo(data, input);
         } else {
           const input = document.getElementById('bizNameInput').value.trim();
           if (!input) { alert('기업명을 입력해주세요.'); setBizLoading(false); return; }
-          data = await callApi({ action: 'searchByBizName', bizName: input });
+          result = localSearchByBizName(data, input);
         }
-        renderBizResults(data);
+        renderBizResults(result);
       } catch (e) {
         showError('bizErrorBanner', '조회 실패: ' + e.message);
       } finally {
