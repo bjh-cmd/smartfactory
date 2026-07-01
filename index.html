@@ -73,6 +73,17 @@
       color: var(--text-light);
     }
 
+    .page-header p.notice {
+      margin: 8px 0 0;
+      font-size: 12.5px;
+      color: #854d0e;
+      background: #fefce8;
+      border-left: 3px solid #eab308;
+      padding: 6px 10px;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.6;
+    }
+
     .section-divider {
       height: 1px;
       background: var(--border);
@@ -347,6 +358,8 @@
     <div class="page-header">
       <h2>경기도 스마트공장 구축 지원기업 조회</h2>
       <p>사업구분, 지역, 지원년도를 선택한 후 조회 버튼을 클릭하면 지원기업 현황을 확인할 수 있습니다.</p>
+      <p class="notice">※ 중기부형 스마트공장은 일부 사업 현황이 반영되었으며, 현재 기업 선정이 진행 중인 사업은 확정 후 순차적으로 업데이트 예정입니다. (최종 업데이트: 2026. 6. 20.)</p>
+      <p class="notice">※ 경기도형 스마트공장은 경기테크노파크가 경기도 전역을 수행하여 수치가 정확하나, 중기부형 스마트공장은 경기테크노파크 수행 사업만 반영되어 있어 경기대진테크노파크 등 타 기관 수행 사업은 포함되지 않습니다. 이에 중기부형 수치는 실제와 차이가 있을 수 있으므로 참고용으로만 활용하여 주시기 바랍니다.</p>
     </div>
 
     <div class="filter-bar">
@@ -402,19 +415,11 @@
 
     <div class="page-header">
       <h3>지원이력 조회</h3>
-      <p>사업자번호 또는 기업명으로 지원이력을 확인할 수 있습니다.</p>
-    </div>
-
-    <div class="biz-tabs">
-      <button class="biz-tab active" id="tabBizNo" onclick="switchTab('no')">사업자번호로 조회</button>
-      <button class="biz-tab" id="tabBizName" onclick="switchTab('name')">기업명으로 조회</button>
+      <p>기업명으로 지원이력을 확인할 수 있습니다.</p>
     </div>
 
     <div class="filter-bar">
-      <div id="inputBizNo" class="biz-input-wrap">
-        <input type="text" id="bizInput" style="min-width:480px;" placeholder="사업자번호 입력 (예: 123-45-67890 또는 1234567890)">
-      </div>
-      <div id="inputBizName" class="biz-input-wrap" style="display:none;">
+      <div class="biz-input-wrap">
         <input type="text" id="bizNameInput" style="min-width:480px;" placeholder="기업명 입력 (예: 경기산업 — 일부만 입력해도 조회됩니다)">
       </div>
       <button id="bizSearchBtn" onclick="searchByBiz()">🔍 조회</button>
@@ -740,38 +745,17 @@
     }
 
     // =====================================================
-    // 사업자번호 / 기업명 지원이력 조회
+    // 기업명 지원이력 조회
     // =====================================================
-    let bizSearchMode = 'no';
-
-    function switchTab(mode) {
-      bizSearchMode = mode;
-      document.getElementById('tabBizNo').classList.toggle('active', mode === 'no');
-      document.getElementById('tabBizName').classList.toggle('active', mode === 'name');
-      document.getElementById('inputBizNo').style.display = mode === 'no' ? 'flex' : 'none';
-      document.getElementById('inputBizName').style.display = mode === 'name' ? 'flex' : 'none';
-      hideError('bizErrorBanner');
-      document.getElementById('bizResultCount').style.display = 'none';
-      document.getElementById('bizTableWrap').style.display = 'none';
-      document.getElementById('bizEmptyState').style.display = 'block';
-    }
-
     async function searchByBiz() {
       hideError('bizErrorBanner');
       setBizLoading(true);
 
       try {
         const data = await loadData();
-        let result;
-        if (bizSearchMode === 'no') {
-          const input = document.getElementById('bizInput').value.trim();
-          if (!input) { alert('사업자번호를 입력해주세요.'); setBizLoading(false); return; }
-          result = localSearchByBizNo(data, input);
-        } else {
-          const input = document.getElementById('bizNameInput').value.trim();
-          if (!input) { alert('기업명을 입력해주세요.'); setBizLoading(false); return; }
-          result = localSearchByBizName(data, input);
-        }
+        const input = document.getElementById('bizNameInput').value.trim();
+        if (!input) { alert('기업명을 입력해주세요.'); setBizLoading(false); return; }
+        const result = localSearchByBizName(data, input);
         renderBizResults(result);
       } catch (e) {
         showError('bizErrorBanner', '조회 실패: ' + e.message);
@@ -790,12 +774,9 @@
       document.getElementById('bizTableWrap').style.display = 'block';
     }
 
-    // Enter 키로 조회
     document.addEventListener('DOMContentLoaded', function () {
-      ['bizInput', 'bizNameInput'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('keydown', function (e) { if (e.key === 'Enter') searchByBiz(); });
-      });
+      const el = document.getElementById('bizNameInput');
+      if (el) el.addEventListener('keydown', function (e) { if (e.key === 'Enter') searchByBiz(); });
     });
   </script>
 </body>
