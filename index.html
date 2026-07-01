@@ -347,9 +347,94 @@
       font-size: 13px;
       margin-bottom: 12px;
     }
+
+    /* 코드 입력 오버레이 */
+    #codeOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      background: rgba(238, 241, 246, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #codeCard {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(255,255,255,0.9);
+      border-radius: 20px;
+      padding: 40px 44px;
+      width: 360px;
+      text-align: center;
+      box-shadow: 0 8px 40px rgba(20, 30, 60, 0.13), 0 2px 10px rgba(20,30,60,0.07);
+    }
+    #codeCard .icon { font-size: 36px; margin-bottom: 12px; }
+    #codeCard h1 { font-size: 18px; font-weight: 900; margin: 0 0 6px; color: var(--text); }
+    #codeCard p { font-size: 13px; color: var(--text-light); margin: 0 0 24px; }
+    #codeInput {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-family: inherit;
+      letter-spacing: 2px;
+      text-align: center;
+      border: 1.5px solid #cfd4da;
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text);
+      margin-bottom: 8px;
+      box-sizing: border-box;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    #codeInput:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26,115,232,0.15);
+    }
+    #codeInput.error { border-color: #c5221f; box-shadow: 0 0 0 3px rgba(197,34,31,0.12); }
+    #codeErrorMsg { font-size: 12px; color: #c5221f; margin-bottom: 10px; min-height: 16px; }
+    #codeSubmitBtn {
+      width: 100%;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: inherit;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    #codeSubmitBtn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    #codeCard .hint { font-size: 11px; color: #adb3bb; margin-top: 16px; }
+      display: none;
+      background: #fce8e6;
+      border: 1px solid #f5c6cb;
+      color: #c5221f;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
   </style>
 </head>
 <body>
+
+  <!-- 코드 입력 오버레이 -->
+  <div id="codeOverlay">
+    <div id="codeCard">
+      <div class="icon">&#127981;</div>
+      <h1>경기도 스마트공장 조회</h1>
+      <p>접근 코드를 입력하세요</p>
+      <input type="text" id="codeInput" placeholder="여기에 코드를 입력하세요" autocomplete="off" spellcheck="false">
+      <div id="codeErrorMsg"></div>
+      <button id="codeSubmitBtn" onclick="submitCode()">입장하기</button>
+      <div class="hint">코드는 담당 기관 담당자에게 문의하세요</div>
+    </div>
+  </div>
+
   <div class="container">
     <div class="page-header">
       <h2>경기도 스마트공장 구축 지원기업 조회</h2>
@@ -444,7 +529,91 @@
     // (Apps Script 호출 없음 — 방화벽 문제 없음)
     // =====================================================
     const DATA_URL = './data.json';
-    let RAW_DATA = null; // { headers, rows } 전체 원본 데이터 (최초 1회 로드)
+    let RAW_DATA = null;
+
+    // =====================================================
+    // 접근 코드 맵 (코드 → 지역명, '전체'는 모든 지역 허용)
+    // =====================================================
+    const CODE_MAP = {
+      'XQPZL': '전체',
+      'MKTVB': '가평',
+      'HRJWC': '고양',
+      'NTYFD': '과천',
+      'QRMXK': '광명',
+      'ZKLVH': '광주',
+      'NBPWG': '구리',
+      'TSFDX': '군포',
+      'CRKQY': '김포',
+      'MJVBP': '남양주',
+      'LWHCT': '동두천',
+      'NZBXF': '부천',
+      'KYRQD': '성남',
+      'GHSMN': '수원',
+      'VLTKW': '시흥',
+      'PJDZX': '안산',
+      'RSTMB': '안성',
+      'VHQFL': '안양',
+      'PKYXN': '양주',
+      'BWQCJ': '양평',
+      'RFVTZ': '여주',
+      'MKHDR': '연천',
+      'WXPHY': '오산',
+      'LQBNS': '용인',
+      'FTGCK': '의왕',
+      'JPRVX': '의정부',
+      'AABCD': '이천',
+      'EFGEH': '파주',
+      'HTJKL': '평택',
+      'OOPQR': '포천',
+      'UVWNX': '하남',
+      'WTYZA': '화성'
+    };
+
+    let LOCKED_REGION = null; // null = 전체, '김포' 등 = 해당 지역 고정
+
+    // =====================================================
+    // 코드 입력 처리
+    // =====================================================
+    function submitCode() {
+      const input = document.getElementById('codeInput').value.trim().toUpperCase();
+      const errMsg = document.getElementById('codeErrorMsg');
+      const inputEl = document.getElementById('codeInput');
+
+      if (!input) {
+        errMsg.textContent = '코드를 입력해주세요.';
+        inputEl.classList.add('error');
+        return;
+      }
+
+      if (!CODE_MAP[input]) {
+        errMsg.textContent = '올바르지 않은 코드입니다. 다시 확인해주세요.';
+        inputEl.classList.add('error');
+        inputEl.value = '';
+        setTimeout(() => { inputEl.classList.remove('error'); errMsg.textContent = ''; }, 2000);
+        return;
+      }
+
+      const region = CODE_MAP[input];
+      LOCKED_REGION = (region === '전체') ? null : region;
+
+      // 오버레이 제거
+      document.getElementById('codeOverlay').style.display = 'none';
+
+      // 지역 드롭다운 고정 처리
+      if (LOCKED_REGION) {
+        const regionSel = document.getElementById('regionSelect');
+        regionSel.value = LOCKED_REGION;
+        regionSel.disabled = true;
+        regionSel.title = '접근 코드에 의해 지역이 고정되었습니다.';
+      }
+    }
+
+    // Enter 키로 코드 제출
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && document.getElementById('codeOverlay').style.display !== 'none') {
+        submitCode();
+      }
+    });
 
     // 경기도 31개 시군 (가나다순)
     const REGIONS = [
@@ -694,7 +863,7 @@
     async function search() {
       const bizType = document.getElementById('bizTypeSelect').value;
       if (!bizType) { alert('사업구분을 선택해주세요.'); return; }
-      const region = document.getElementById('regionSelect').value;
+      const region = LOCKED_REGION || document.getElementById('regionSelect').value;
       const years = getSelectedYears();
       document.getElementById('yearMsPanel').classList.remove('open');
       hideError('errorBanner');
