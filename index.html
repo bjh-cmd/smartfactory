@@ -500,8 +500,13 @@
     </div>
 
     <div class="filter-bar">
+      <label>지역
+        <select id="bizRegionSelect">
+          <option value="전체">전체</option>
+        </select>
+      </label>
       <div class="biz-input-wrap">
-        <input type="text" id="bizNameInput" style="min-width:480px;" placeholder="기업명 입력 (예: 경기산업 — 일부만 입력해도 조회됩니다)">
+        <input type="text" id="bizNameInput" style="min-width:380px;" placeholder="기업명 입력 (예: 경기산업 — 일부만 입력해도 조회됩니다)">
       </div>
       <button id="bizSearchBtn" onclick="searchByBiz()">🔍 조회</button>
       <span id="bizLoading" class="loading-inline" style="display:none;"><span class="spinner"></span>조회 중...</span>
@@ -599,12 +604,14 @@
       // 오버레이 제거
       document.getElementById('codeOverlay').style.display = 'none';
 
-      // 지역 드롭다운 고정 처리
+      // 지역 드롭다운 고정 처리 (상단 조회 + 지원이력 조회 둘 다)
       if (LOCKED_REGION) {
-        const regionSel = document.getElementById('regionSelect');
-        regionSel.value = LOCKED_REGION;
-        regionSel.disabled = true;
-        regionSel.title = '접근 코드에 의해 지역이 고정되었습니다.';
+        ['regionSelect', 'bizRegionSelect'].forEach(selId => {
+          const sel = document.getElementById(selId);
+          sel.value = LOCKED_REGION;
+          sel.disabled = true;
+          sel.title = '접근 코드에 의해 지역이 고정되었습니다.';
+        });
       }
     }
 
@@ -676,13 +683,18 @@
       return { headers, rows: filtered };
     }
 
-    function localSearchByBizName(data, bizName) {
+    function localSearchByBizName(data, bizName, region) {
       const { headers, rows } = data;
       const nameIdx = headers.findIndex(h => h.indexOf('기업명') !== -1 || h.indexOf('사업자명') !== -1);
+      const regionIdx = headers.indexOf('지역');
       if (nameIdx === -1) throw new Error('헤더에서 "기업명" 또는 "사업자명" 컬럼을 찾을 수 없습니다.');
       const keyword = String(bizName || '').replace(/\s/g, '').toLowerCase();
       if (!keyword) return { headers, rows: [] };
-      const filtered = rows.filter(r => String(r[nameIdx] || '').replace(/\s/g, '').toLowerCase().indexOf(keyword) !== -1).map(r => r.slice());
+      const filtered = rows.filter(r => {
+        const nameOk = String(r[nameIdx] || '').replace(/\s/g, '').toLowerCase().indexOf(keyword) !== -1;
+        const regionOk = (!region || region === '전체') ? true : (r[regionIdx] === region);
+        return nameOk && regionOk;
+      }).map(r => r.slice());
       return { headers, rows: filtered };
     }
 
@@ -690,13 +702,15 @@
     // 초기화
     // =====================================================
     window.onload = async function () {
-      // 지역 드롭다운
-      const regionSel = document.getElementById('regionSelect');
-      REGIONS.forEach(r => {
-        const opt = document.createElement('option');
-        opt.value = r;
-        opt.textContent = r;
-        regionSel.appendChild(opt);
+      // 지역 드롭다운 (상단 조회 + 지원이력 조회 둘 다 채우기)
+      ['regionSelect', 'bizRegionSelect'].forEach(selId => {
+        const sel = document.getElementById(selId);
+        REGIONS.forEach(r => {
+          const opt = document.createElement('option');
+          opt.value = r;
+          opt.textContent = r;
+          sel.appendChild(opt);
+        });
       });
 
       setLoading(true);
@@ -920,7 +934,8 @@
         const data = await loadData();
         const input = document.getElementById('bizNameInput').value.trim();
         if (!input) { alert('기업명을 입력해주세요.'); setBizLoading(false); return; }
-        const result = localSearchByBizName(data, input);
+        const bizRegion = LOCKED_REGION || document.getElementById('bizRegionSelect').value;
+        const result = localSearchByBizName(data, input, bizRegion);
         renderBizResults(result);
       } catch (e) {
         showError('bizErrorBanner', '조회 실패: ' + e.message);
