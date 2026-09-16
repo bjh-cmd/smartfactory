@@ -49,42 +49,15 @@
       border-bottom: 3px solid var(--primary);
     }
 
-    h2 {
-      margin: 0;
-      font-size: 22px;
-      font-weight: 900;
-      letter-spacing: -0.3px;
-      color: var(--text);
-    }
+    h2 { margin: 0; font-size: 22px; font-weight: 900; letter-spacing: -0.3px; color: var(--text); }
     h2::before { content: '🏭'; margin-right: 8px; }
-
-    h3 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -0.2px;
-      color: var(--text);
-    }
+    h3 { margin: 0; font-size: 18px; font-weight: 800; letter-spacing: -0.2px; color: var(--text); }
     h3::before { content: '🧾'; margin-right: 6px; }
 
-    .page-header p {
-      margin: 6px 0 0;
-      font-size: 13px;
-      color: var(--text-light);
-    }
+    .page-header p { margin: 6px 0 0; font-size: 13px; color: var(--text-light); }
+    .page-header p.notice { margin: 6px 0 0; font-size: 12.5px; color: var(--text-light); line-height: 1.7; }
 
-    .page-header p.notice {
-      margin: 6px 0 0;
-      font-size: 12.5px;
-      color: var(--text-light);
-      line-height: 1.7;
-    }
-
-    .section-divider {
-      height: 1px;
-      background: var(--border);
-      margin: 36px 0 22px;
-    }
+    .section-divider { height: 1px; background: var(--border); margin: 36px 0 22px; }
 
     .filter-bar {
       display: flex;
@@ -98,8 +71,7 @@
       padding: 14px 18px;
     }
 
-    .filter-bar label,
-    .filter-group {
+    .filter-bar label, .filter-group {
       display: flex;
       align-items: center;
       gap: 8px;
@@ -116,14 +88,9 @@
       border: 1px solid #cfd4da;
       transition: all 0.15s ease;
     }
-
-    select, input[type="text"] {
-      background: #fff;
-      color: var(--text);
-    }
+    select, input[type="text"] { background: #fff; color: var(--text); }
     select { min-width: 120px; cursor: pointer; }
     input[type="text"] { min-width: 260px; }
-
     select:hover, input[type="text"]:hover { border-color: var(--primary); }
     select:focus, input[type="text"]:focus {
       outline: none;
@@ -131,293 +98,79 @@
       box-shadow: 0 0 0 3px rgba(26,115,232,0.15);
     }
 
-    button {
-      cursor: pointer;
-      border: none;
-      color: #fff;
-      font-weight: 700;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-    }
-
+    button { cursor: pointer; border: none; color: #fff; font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
     #searchBtn, #bizSearchBtn { background: var(--primary); }
     #searchBtn:hover:not(:disabled), #bizSearchBtn:hover:not(:disabled) {
       background: var(--primary-dark);
       box-shadow: 0 3px 8px rgba(26,115,232,0.35);
       transform: translateY(-1px);
     }
-
     #downloadBtn { background: var(--success); }
-    #downloadBtn:hover:not(:disabled) {
-      background: var(--success-dark);
-      box-shadow: 0 3px 8px rgba(52,168,83,0.35);
-      transform: translateY(-1px);
-    }
+    #downloadBtn:hover:not(:disabled) { background: var(--success-dark); box-shadow: 0 3px 8px rgba(52,168,83,0.35); transform: translateY(-1px); }
+    button:disabled { background: #d4d8dd !important; color: #fff; cursor: not-allowed; box-shadow: none; transform: none; }
 
-    button:disabled {
-      background: #d4d8dd !important;
-      color: #fff;
-      cursor: not-allowed;
-      box-shadow: none;
-      transform: none;
-    }
-
-    /* 지원년도 다중 선택 드롭다운 */
+    /* 지원년도 다중 선택 */
     .ms-wrap { position: relative; }
-    .ms-btn {
-      background: #fff;
-      color: var(--text);
-      min-width: 150px;
-      text-align: left;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      font-weight: 400;
-    }
+    .ms-btn { background: #fff; color: var(--text); min-width: 150px; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 400; }
     .ms-btn:hover { border-color: var(--primary); }
     .ms-arrow { font-size: 11px; color: var(--text-light); }
-    .ms-panel {
-      display: none;
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      min-width: 160px;
-      max-height: 260px;
-      overflow-y: auto;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.14);
-      padding: 6px;
-      z-index: 20;
-    }
+    .ms-panel { display: none; position: absolute; top: calc(100% + 4px); left: 0; min-width: 160px; max-height: 260px; overflow-y: auto; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.14); padding: 6px; z-index: 20; }
     .ms-panel.open { display: block; }
-    .ms-option {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 10px;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 400;
-      color: var(--text);
-      cursor: pointer;
-      white-space: nowrap;
-    }
+    .ms-option { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; font-size: 14px; font-weight: 400; color: var(--text); cursor: pointer; white-space: nowrap; }
     .ms-option:hover { background: var(--hover); }
     .ms-option input { cursor: pointer; }
     .ms-divider { height: 1px; background: var(--border); margin: 4px 2px; }
 
-    .loading-inline {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--text-light);
-      font-size: 13px;
-    }
-
-    .spinner {
-      width: 14px;
-      height: 14px;
-      border: 2px solid #d4d8dd;
-      border-top-color: var(--primary);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      flex-shrink: 0;
-    }
+    .loading-inline { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); font-size: 13px; }
+    .spinner { width: 14px; height: 14px; border: 2px solid #d4d8dd; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .result-count {
-      display: none;
-      font-weight: 700;
-      font-size: 13px;
-      margin-bottom: 12px;
-      padding: 6px 14px;
-      background: var(--header-bg);
-      color: var(--primary-dark);
-      border-radius: 20px;
-    }
+    .result-count { display: none; font-weight: 700; font-size: 13px; margin-bottom: 12px; padding: 6px 14px; background: var(--header-bg); color: var(--primary-dark); border-radius: 20px; }
 
-    .empty-state {
-      text-align: center;
-      padding: 64px 20px;
-      color: var(--text-light);
-      border: 2px dashed var(--border);
-      border-radius: 12px;
-      font-size: 14px;
-      background: #fafbfc;
-    }
+    .empty-state { text-align: center; padding: 64px 20px; color: var(--text-light); border: 2px dashed var(--border); border-radius: 12px; font-size: 14px; background: #fafbfc; }
     .empty-state .icon { font-size: 38px; margin-bottom: 12px; opacity: 0.6; }
     .empty-state strong { color: var(--primary); }
 
-    .table-wrap {
-      display: none;
-      overflow: auto;
-      max-height: 70vh;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-    }
-
+    .table-wrap { display: none; overflow: auto; max-height: 70vh; border: 1px solid var(--border); border-radius: 10px; }
     table { border-collapse: collapse; width: 100%; font-size: 13px; }
-
-    th, td {
-      border-bottom: 1px solid var(--border);
-      border-right: 1px solid var(--border);
-      padding: 10px 12px;
-      vertical-align: top;
-      word-break: break-word;
-      white-space: normal;
-    }
+    th, td { border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); padding: 10px 12px; vertical-align: top; word-break: break-word; white-space: normal; }
     th:last-child, td:last-child { border-right: none; }
-
-    th {
-      background: var(--header-bg);
-      color: var(--primary-dark);
-      position: sticky;
-      top: 0;
-      z-index: 1;
-      text-align: center;
-      font-weight: 700;
-      white-space: nowrap;
-      box-shadow: inset 0 -2px 0 var(--primary);
-    }
-
+    th { background: var(--header-bg); color: var(--primary-dark); position: sticky; top: 0; z-index: 1; text-align: center; font-weight: 700; white-space: nowrap; box-shadow: inset 0 -2px 0 var(--primary); }
     tbody tr:nth-child(even) { background: var(--stripe); }
     tbody tr:hover { background: var(--hover); }
-
     td.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
     td.idx { text-align: center; white-space: nowrap; color: var(--text-light); font-weight: 700; }
-
     th.col-xl, td.col-xl { min-width: 280px; }
     th.col-md, td.col-md { min-width: 140px; }
     td.col-xl, td.col-md { padding: 0; }
-    .cell-clamp {
-      padding: 10px 12px;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      line-height: 1.4;
-    }
+    .cell-clamp { padding: 10px 12px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; }
     th.col-amt, td.col-amt { min-width: 130px; }
     td.col-source { white-space: nowrap; }
 
     /* 지원이력 탭 */
-    .biz-tabs {
-      display: flex;
-      gap: 0;
-      margin-bottom: -1px;
-      position: relative;
-      z-index: 1;
-    }
-    .biz-tab {
-      padding: 10px 22px;
-      font-size: 14px;
-      font-family: inherit;
-      font-weight: 700;
-      border: 1px solid var(--border);
-      border-bottom: none;
-      border-radius: 8px 8px 0 0;
-      background: #f0f2f5;
-      color: var(--text-light);
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-      box-shadow: none;
-      transform: none;
-    }
+    .biz-tabs { display: flex; gap: 0; margin-bottom: -1px; position: relative; z-index: 1; }
+    .biz-tab { padding: 10px 22px; font-size: 14px; font-family: inherit; font-weight: 700; border: 1px solid var(--border); border-bottom: none; border-radius: 8px 8px 0 0; background: #f0f2f5; color: var(--text-light); cursor: pointer; transition: background 0.15s, color 0.15s; box-shadow: none; transform: none; }
     .biz-tab:hover:not(.active) { background: #e4e8ef; color: var(--text); }
-    .biz-tab.active {
-      background: #f8f9fb;
-      color: var(--primary-dark);
-      border-color: var(--border);
-      border-bottom: 1px solid #f8f9fb;
-    }
+    .biz-tab.active { background: #f8f9fb; color: var(--primary-dark); border-color: var(--border); border-bottom: 1px solid #f8f9fb; }
     .biz-tabs + .filter-bar { border-top-left-radius: 0; background: #f8f9fb; }
     .biz-input-wrap { display: flex; }
 
     /* 에러 배너 */
-    .error-banner {
-      display: none;
-      background: #fce8e6;
-      border: 1px solid #f5c6cb;
-      color: #c5221f;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 13px;
-      margin-bottom: 12px;
-    }
+    .error-banner { display: none; background: #fce8e6; border: 1px solid #f5c6cb; color: #c5221f; padding: 10px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; }
 
     /* 코드 입력 오버레이 */
-    #codeOverlay {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      background: rgba(238, 241, 246, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    #codeCard {
-      background: rgba(255, 255, 255, 0.88);
-      border: 1px solid rgba(255,255,255,0.9);
-      border-radius: 20px;
-      padding: 40px 44px;
-      width: 360px;
-      text-align: center;
-      box-shadow: 0 8px 40px rgba(20, 30, 60, 0.13), 0 2px 10px rgba(20,30,60,0.07);
-    }
+    #codeOverlay { position: fixed; inset: 0; z-index: 9999; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); background: rgba(238, 241, 246, 0.7); display: flex; align-items: center; justify-content: center; }
+    #codeCard { background: rgba(255,255,255,0.88); border: 1px solid rgba(255,255,255,0.9); border-radius: 20px; padding: 40px 44px; width: 360px; text-align: center; box-shadow: 0 8px 40px rgba(20,30,60,0.13), 0 2px 10px rgba(20,30,60,0.07); }
     #codeCard .icon { font-size: 36px; margin-bottom: 12px; }
     #codeCard h1 { font-size: 18px; font-weight: 900; margin: 0 0 6px; color: var(--text); }
     #codeCard p { font-size: 13px; color: var(--text-light); margin: 0 0 24px; }
-    #codeInput {
-      width: 100%;
-      padding: 12px 16px;
-      font-size: 15px;
-      font-family: inherit;
-      letter-spacing: 2px;
-      text-align: center;
-      border: 1.5px solid #cfd4da;
-      border-radius: 10px;
-      background: #fff;
-      color: var(--text);
-      margin-bottom: 8px;
-      box-sizing: border-box;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-    #codeInput:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(26,115,232,0.15);
-    }
+    #codeInput { width: 100%; padding: 12px 16px; font-size: 15px; font-family: inherit; letter-spacing: 2px; text-align: center; border: 1.5px solid #cfd4da; border-radius: 10px; background: #fff; color: var(--text); margin-bottom: 8px; box-sizing: border-box; transition: border-color 0.15s, box-shadow 0.15s; }
+    #codeInput:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,115,232,0.15); }
     #codeInput.error { border-color: #c5221f; box-shadow: 0 0 0 3px rgba(197,34,31,0.12); }
     #codeErrorMsg { font-size: 12px; color: #c5221f; margin-bottom: 10px; min-height: 16px; }
-    #codeSubmitBtn {
-      width: 100%;
-      padding: 12px;
-      font-size: 14px;
-      font-weight: 700;
-      font-family: inherit;
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.15s, transform 0.1s;
-    }
+    #codeSubmitBtn { width: 100%; padding: 12px; font-size: 14px; font-weight: 700; font-family: inherit; background: var(--primary); color: #fff; border: none; border-radius: 10px; cursor: pointer; transition: background 0.15s, transform 0.1s; }
     #codeSubmitBtn:hover { background: var(--primary-dark); transform: translateY(-1px); }
     #codeCard .hint { font-size: 11px; color: #adb3bb; margin-top: 16px; }
-      display: none;
-      background: #fce8e6;
-      border: 1px solid #f5c6cb;
-      color: #c5221f;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 13px;
-      margin-bottom: 12px;
-    }
   </style>
 </head>
 <body>
@@ -425,7 +178,7 @@
   <!-- 코드 입력 오버레이 -->
   <div id="codeOverlay">
     <div id="codeCard">
-      <div class="icon">&#127981;</div>
+      <div class="icon">🏭</div>
       <h1>경기도 스마트공장 조회</h1>
       <p>접근 코드를 입력하세요</p>
       <input type="text" id="codeInput" placeholder="여기에 코드를 입력하세요" autocomplete="off" spellcheck="false">
@@ -439,7 +192,7 @@
     <div class="page-header">
       <h2>경기도 스마트공장 구축 지원기업 조회</h2>
       <p>사업구분, 지역, 지원년도를 선택한 후 조회 버튼을 클릭하면 지원기업 현황을 확인할 수 있습니다.</p>
-      <p class="notice">※ 중기부형 스마트공장은 일부 사업 현황이 반영되었으며, 현재 기업 선정이 진행 중인 사업은 확정 후 순차적으로 업데이트 예정입니다. (최종 업데이트: 2026. 8. 20.)</p>
+      <p class="notice">※ 중기부형 스마트공장은 일부 사업 현황이 반영되었으며, 현재 기업 선정이 진행 중인 사업은 확정 후 순차적으로 업데이트 예정입니다. (최종 업데이트: 2026. 6. 20.)</p>
       <p class="notice">※ 경기도형 스마트공장은 경기테크노파크가 경기도 전역을 수행하여 수치가 정확하나, 중기부형 스마트공장은 경기테크노파크 수행 사업만 반영되어 있어 경기대진테크노파크 등 타 기관 수행 사업은 포함되지 않습니다. 이에 중기부형 수치는 실제와 차이가 있을 수 있으므로 참고용으로만 활용하여 주시기 바랍니다.</p>
     </div>
 
@@ -451,11 +204,9 @@
           <option value="중기부형">중기부형</option>
         </select>
       </label>
-
       <label>지역
         <select id="regionSelect"><option value="전체">전체</option></select>
       </label>
-
       <div class="filter-group">
         지원년도
         <div class="ms-wrap" id="yearMs">
@@ -471,7 +222,6 @@
           </div>
         </div>
       </div>
-
       <button id="searchBtn" onclick="search()" disabled>🔍 조회</button>
       <button id="downloadBtn" onclick="downloadExcel()" disabled>⬇ 엑셀 다운로드</button>
       <span id="loading" class="loading-inline"><span class="spinner"></span>불러오는 중...</span>
@@ -479,12 +229,10 @@
 
     <div id="errorBanner" class="error-banner"></div>
     <div id="resultCount" class="result-count"></div>
-
     <div id="emptyState" class="empty-state">
       <div class="icon">🔍</div>
       조건을 선택한 후 <strong>조회</strong> 버튼을 클릭하면 결과가 표시됩니다.
     </div>
-
     <div class="table-wrap" id="tableWrap">
       <table id="resultTable">
         <thead><tr id="headerRow"></tr></thead>
@@ -496,16 +244,22 @@
 
     <div class="page-header">
       <h3>지원이력 조회</h3>
-      <p>기업명으로 지원이력을 확인할 수 있습니다.</p>
+      <p>사업자번호 또는 기업명으로 지원이력을 확인할 수 있습니다.</p>
+    </div>
+
+    <div class="biz-tabs">
+      <button class="biz-tab active" id="tabBizNo" onclick="switchTab('no')">사업자번호로 조회</button>
+      <button class="biz-tab" id="tabBizName" onclick="switchTab('name')">기업명으로 조회</button>
     </div>
 
     <div class="filter-bar">
       <label>지역
-        <select id="bizRegionSelect">
-          <option value="전체">전체</option>
-        </select>
+        <select id="bizRegionSelect"><option value="전체">전체</option></select>
       </label>
-      <div class="biz-input-wrap">
+      <div id="inputBizNo" class="biz-input-wrap">
+        <input type="text" id="bizInput" style="min-width:380px;" placeholder="사업자번호 입력 (예: 123-45-67890 또는 1234567890)">
+      </div>
+      <div id="inputBizName" class="biz-input-wrap" style="display:none;">
         <input type="text" id="bizNameInput" style="min-width:380px;" placeholder="기업명 입력 (예: 경기산업 — 일부만 입력해도 조회됩니다)">
       </div>
       <button id="bizSearchBtn" onclick="searchByBiz()">🔍 조회</button>
@@ -514,12 +268,10 @@
 
     <div id="bizErrorBanner" class="error-banner"></div>
     <div id="bizResultCount" class="result-count"></div>
-
     <div id="bizEmptyState" class="empty-state">
       <div class="icon">🧾</div>
       사업자번호 또는 기업명을 입력한 후 <strong>조회</strong> 버튼을 클릭하면 지원이력이 표시됩니다.
     </div>
-
     <div class="table-wrap" id="bizTableWrap">
       <table id="bizResultTable">
         <thead><tr id="bizHeaderRow"></tr></thead>
@@ -530,51 +282,42 @@
 
   <script>
     // =====================================================
-    // 데이터는 같은 폴더의 data.json 파일에서 읽어옵니다.
-    // (Apps Script 호출 없음 — 방화벽 문제 없음)
+    // 설정
     // =====================================================
     const DATA_URL = './data.json';
+    const LOG_API_URL = 'https://script.google.com/macros/s/AKfycbxwU1cJgvCcH1cxBBagUZnAczWoLNkc2MPgGKXKUZxtQlrmk-JMcOCI-Y9Z1MV8iisnrA/exec';
+
     let RAW_DATA = null;
+    let CURRENT_CODE = '';
+    let LOCKED_REGION = null;
 
     // =====================================================
-    // 접근 코드 맵 (코드 → 지역명, '전체'는 모든 지역 허용)
+    // 접근 코드 맵
     // =====================================================
     const CODE_MAP = {
-      'XQPZL': '전체',
-      'MKTVB': '가평',
-      'HRJWC': '고양',
-      'NTYFD': '과천',
-      'QRMXK': '광명',
-      'ZKLVH': '광주',
-      'NBPWG': '구리',
-      'TSFDX': '군포',
-      'CRKQY': '김포',
-      'MJVBP': '남양주',
-      'LWHCT': '동두천',
-      'NZBXF': '부천',
-      'KYRQD': '성남',
-      'GHSMN': '수원',
-      'VLTKW': '시흥',
-      'PJDZX': '안산',
-      'RSTMB': '안성',
-      'VHQFL': '안양',
-      'PKYXN': '양주',
-      'BWQCJ': '양평',
-      'RFVTZ': '여주',
-      'MKHDR': '연천',
-      'WXPHY': '오산',
-      'LQBNS': '용인',
-      'FTGCK': '의왕',
-      'JPRVX': '의정부',
-      'AABCD': '이천',
-      'EFGEH': '파주',
-      'HTJKL': '평택',
-      'OOPQR': '포천',
-      'UVWNX': '하남',
-      'WTYZA': '화성'
+      'XQPZL': '전체', 'MKTVB': '가평', 'HRJWC': '고양', 'NTYFD': '과천',
+      'QRMXK': '광명', 'ZKLVH': '광주', 'NBPWG': '구리', 'TSFDX': '군포',
+      'CRKQY': '김포', 'MJVBP': '남양주', 'LWHCT': '동두천', 'NZBXF': '부천',
+      'KYRQD': '성남', 'GHSMN': '수원', 'VLTKW': '시흥', 'PJDZX': '안산',
+      'RSTMB': '안성', 'VHQFL': '안양', 'PKYXN': '양주', 'BWQCJ': '양평',
+      'RFVTZ': '여주', 'MKHDR': '연천', 'WXPHY': '오산', 'LQBNS': '용인',
+      'FTGCK': '의왕', 'JPRVX': '의정부', 'AABCD': '이천', 'EFGEH': '파주',
+      'HTJKL': '평택', 'OOPQR': '포천', 'UVWNX': '하남', 'WTYZA': '화성'
     };
 
-    let LOCKED_REGION = null; // null = 전체, '김포' 등 = 해당 지역 고정
+    // =====================================================
+    // 로그 전송 (백그라운드, 실패해도 무시)
+    // =====================================================
+    function sendLog(params) {
+      try {
+        const url = new URL(LOG_API_URL);
+        url.searchParams.set('action', 'logQuery');
+        url.searchParams.set('code', CURRENT_CODE);
+        url.searchParams.set('sigun', LOCKED_REGION || '전체');
+        Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+        fetch(url.toString()).catch(() => {});
+      } catch (e) {}
+    }
 
     // =====================================================
     // 코드 입력 처리
@@ -584,11 +327,7 @@
       const errMsg = document.getElementById('codeErrorMsg');
       const inputEl = document.getElementById('codeInput');
 
-      if (!input) {
-        errMsg.textContent = '코드를 입력해주세요.';
-        inputEl.classList.add('error');
-        return;
-      }
+      if (!input) { errMsg.textContent = '코드를 입력해주세요.'; inputEl.classList.add('error'); return; }
 
       if (!CODE_MAP[input]) {
         errMsg.textContent = '올바르지 않은 코드입니다. 다시 확인해주세요.';
@@ -598,13 +337,12 @@
         return;
       }
 
+      CURRENT_CODE = input;
       const region = CODE_MAP[input];
       LOCKED_REGION = (region === '전체') ? null : region;
 
-      // 오버레이 제거
       document.getElementById('codeOverlay').style.display = 'none';
 
-      // 지역 드롭다운 고정 처리 (상단 조회 + 지원이력 조회 둘 다)
       if (LOCKED_REGION) {
         ['regionSelect', 'bizRegionSelect'].forEach(selId => {
           const sel = document.getElementById(selId);
@@ -615,14 +353,13 @@
       }
     }
 
-    // Enter 키로 코드 제출
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' && document.getElementById('codeOverlay').style.display !== 'none') {
-        submitCode();
-      }
+      if (e.key === 'Enter' && document.getElementById('codeOverlay').style.display !== 'none') submitCode();
     });
 
-    // 경기도 31개 시군 (가나다순)
+    // =====================================================
+    // 경기도 31개 시군
+    // =====================================================
     const REGIONS = [
       '가평','고양','과천','광명','광주','구리','군포','김포','남양주','동두천',
       '부천','성남','수원','시흥','안산','안성','안양','양주','양평','여주',
@@ -644,15 +381,14 @@
     }
 
     // =====================================================
-    // 로컬 필터링 함수들 (구 Apps Script 로직을 그대로 재현)
+    // 로컬 필터링
     // =====================================================
     function localGetFilterOptions(data) {
       const { headers, rows } = data;
       const yearIdx = headers.indexOf('지원년도');
       const yearSet = new Set();
       rows.forEach(r => { if (r[yearIdx] !== '' && r[yearIdx] != null) yearSet.add(String(r[yearIdx])); });
-      const years = Array.from(yearSet).sort((a, b) => Number(b) - Number(a));
-      return { headers, years };
+      return { headers, years: Array.from(yearSet).sort((a, b) => Number(b) - Number(a)) };
     }
 
     function localSearchData(data, bizType, region, years) {
@@ -662,24 +398,27 @@
       const yearIdx = headers.indexOf('지원년도');
       const yearList = (years || []).map(String);
       const yearAll = yearList.length === 0 || yearList.indexOf('전체') !== -1;
-
       const filtered = rows.filter(r => {
-        const bizTypeOk = bizTypeIdx === -1 ? true : (String(r[bizTypeIdx]).indexOf(bizType) !== -1);
-        const regionOk = (!region || region === '전체') ? true : (r[regionIdx] === region);
-        const yearOk = yearAll ? true : (yearList.indexOf(String(r[yearIdx])) !== -1);
+        const bizTypeOk = bizTypeIdx === -1 ? true : String(r[bizTypeIdx]).indexOf(bizType) !== -1;
+        const regionOk = (!region || region === '전체') ? true : r[regionIdx] === region;
+        const yearOk = yearAll ? true : yearList.indexOf(String(r[yearIdx])) !== -1;
         return bizTypeOk && regionOk && yearOk;
       }).map(r => r.slice());
-
       return { headers, rows: filtered };
     }
 
-    function localSearchByBizNo(data, bizNo) {
+    function localSearchByBizNo(data, bizNo, region) {
       const { headers, rows } = data;
       const bizIdx = headers.findIndex(h => h.indexOf('사업자') !== -1 && h.indexOf('번호') !== -1);
+      const regionIdx = headers.indexOf('지역');
       if (bizIdx === -1) throw new Error('헤더에서 "사업자번호" 컬럼을 찾을 수 없습니다.');
       const target = String(bizNo || '').replace(/[^0-9]/g, '');
       if (!target) return { headers, rows: [] };
-      const filtered = rows.filter(r => String(r[bizIdx] || '').replace(/[^0-9]/g, '') === target).map(r => r.slice());
+      const filtered = rows.filter(r => {
+        const bizOk = String(r[bizIdx] || '').replace(/[^0-9]/g, '') === target;
+        const regionOk = (!region || region === '전체') ? true : r[regionIdx] === region;
+        return bizOk && regionOk;
+      }).map(r => r.slice());
       return { headers, rows: filtered };
     }
 
@@ -687,12 +426,12 @@
       const { headers, rows } = data;
       const nameIdx = headers.findIndex(h => h.indexOf('기업명') !== -1 || h.indexOf('사업자명') !== -1);
       const regionIdx = headers.indexOf('지역');
-      if (nameIdx === -1) throw new Error('헤더에서 "기업명" 또는 "사업자명" 컬럼을 찾을 수 없습니다.');
+      if (nameIdx === -1) throw new Error('헤더에서 "기업명" 컬럼을 찾을 수 없습니다.');
       const keyword = String(bizName || '').replace(/\s/g, '').toLowerCase();
       if (!keyword) return { headers, rows: [] };
       const filtered = rows.filter(r => {
         const nameOk = String(r[nameIdx] || '').replace(/\s/g, '').toLowerCase().indexOf(keyword) !== -1;
-        const regionOk = (!region || region === '전체') ? true : (r[regionIdx] === region);
+        const regionOk = (!region || region === '전체') ? true : r[regionIdx] === region;
         return nameOk && regionOk;
       }).map(r => r.slice());
       return { headers, rows: filtered };
@@ -702,22 +441,18 @@
     // 초기화
     // =====================================================
     window.onload = async function () {
-      // 지역 드롭다운 (상단 조회 + 지원이력 조회 둘 다 채우기)
       ['regionSelect', 'bizRegionSelect'].forEach(selId => {
         const sel = document.getElementById(selId);
         REGIONS.forEach(r => {
           const opt = document.createElement('option');
-          opt.value = r;
-          opt.textContent = r;
+          opt.value = r; opt.textContent = r;
           sel.appendChild(opt);
         });
       });
-
       setLoading(true);
       try {
         const data = await loadData();
-        const filterOpts = localGetFilterOptions(data);
-        onFiltersLoaded(filterOpts);
+        onFiltersLoaded(localGetFilterOptions(data));
       } catch (e) {
         showError('errorBanner', '초기 데이터 로드 실패: ' + e.message);
         setLoading(false);
@@ -730,9 +465,7 @@
         const label = document.createElement('label');
         label.className = 'ms-option';
         const input = document.createElement('input');
-        input.type = 'checkbox';
-        input.className = 'year-option';
-        input.value = y;
+        input.type = 'checkbox'; input.className = 'year-option'; input.value = y;
         input.onchange = function () { onYearOptionChange(this); };
         label.appendChild(input);
         label.appendChild(document.createTextNode(y));
@@ -744,66 +477,46 @@
     }
 
     // =====================================================
-    // 로딩 / 에러 상태
+    // 로딩 / 에러
     // =====================================================
     function setLoading(on) {
       document.getElementById('loading').style.display = on ? 'inline-flex' : 'none';
       document.getElementById('searchBtn').disabled = on;
     }
-
     function setBizLoading(on) {
       document.getElementById('bizLoading').style.display = on ? 'inline-flex' : 'none';
       document.getElementById('bizSearchBtn').disabled = on;
     }
-
     function showError(bannerId, msg) {
       const el = document.getElementById(bannerId);
-      el.textContent = '⚠️ ' + msg;
-      el.style.display = 'block';
+      el.textContent = '⚠️ ' + msg; el.style.display = 'block';
     }
-
-    function hideError(bannerId) {
-      document.getElementById(bannerId).style.display = 'none';
-    }
+    function hideError(bannerId) { document.getElementById(bannerId).style.display = 'none'; }
 
     // =====================================================
-    // 지원년도 다중 선택 드롭다운
+    // 지원년도 다중 선택
     // =====================================================
-    function toggleYearPanel(e) {
-      e.stopPropagation();
-      document.getElementById('yearMsPanel').classList.toggle('open');
-    }
-
+    function toggleYearPanel(e) { e.stopPropagation(); document.getElementById('yearMsPanel').classList.toggle('open'); }
     document.addEventListener('click', function (e) {
       const wrap = document.getElementById('yearMs');
-      if (wrap && !wrap.contains(e.target)) {
-        document.getElementById('yearMsPanel').classList.remove('open');
-      }
+      if (wrap && !wrap.contains(e.target)) document.getElementById('yearMsPanel').classList.remove('open');
     });
-
     function onYearAllChange(cb) {
-      if (cb.checked) {
-        document.querySelectorAll('.year-option').forEach(el => { el.checked = false; });
-      }
+      if (cb.checked) document.querySelectorAll('.year-option').forEach(el => { el.checked = false; });
       updateYearButtonLabel();
     }
-
     function onYearOptionChange(cb) {
       const allCb = document.getElementById('yearAllCheckbox');
       if (cb.checked) allCb.checked = false;
-      const anyChecked = document.querySelectorAll('.year-option:checked').length > 0;
-      if (!anyChecked) allCb.checked = true;
+      if (!document.querySelectorAll('.year-option:checked').length) allCb.checked = true;
       updateYearButtonLabel();
     }
-
     function updateYearButtonLabel() {
       const allCb = document.getElementById('yearAllCheckbox');
       const label = document.getElementById('yearMsBtnLabel');
       if (allCb.checked) { label.textContent = '전체'; return; }
-      const selected = Array.from(document.querySelectorAll('.year-option:checked')).map(el => el.value);
-      label.textContent = selected.join(', ');
+      label.textContent = Array.from(document.querySelectorAll('.year-option:checked')).map(el => el.value).join(', ');
     }
-
     function getSelectedYears() {
       const allCb = document.getElementById('yearAllCheckbox');
       if (allCb.checked) return ['전체'];
@@ -812,7 +525,7 @@
     }
 
     // =====================================================
-    // 테이블 렌더링 공통
+    // 테이블 렌더링
     // =====================================================
     function getColWidthClass(header) {
       if (header.indexOf('재원') !== -1) return 'col-source';
@@ -821,18 +534,11 @@
       if (/사업비총계|지원금|부담금/.test(header)) return 'col-amt';
       return '';
     }
-
     function buildTable(headers, rows, headerRowEl, bodyEl) {
       const idxCol = headers.indexOf('구분');
-      if (idxCol !== -1) {
-        rows.forEach((row, i) => { row[idxCol] = i + 1; });
-      }
-
+      if (idxCol !== -1) rows.forEach((row, i) => { row[idxCol] = i + 1; });
       const numericCols = new Set();
-      headers.forEach((h, idx) => {
-        if (/원|총계|지원금|부담금/.test(h) && !/년도/.test(h)) numericCols.add(idx);
-      });
-
+      headers.forEach((h, idx) => { if (/원|총계|지원금|부담금/.test(h) && !/년도/.test(h)) numericCols.add(idx); });
       headerRowEl.innerHTML = '';
       headers.forEach(h => {
         const th = document.createElement('th');
@@ -841,7 +547,6 @@
         if (wc) th.classList.add(wc);
         headerRowEl.appendChild(th);
       });
-
       bodyEl.innerHTML = '';
       rows.forEach(row => {
         const tr = document.createElement('tr');
@@ -849,22 +554,15 @@
           const td = document.createElement('td');
           const wc = getColWidthClass(headers[idx]);
           if (wc) td.classList.add(wc);
-
           if (numericCols.has(idx) && typeof cell === 'number') {
-            td.textContent = cell.toLocaleString('ko-KR');
-            td.classList.add('num');
+            td.textContent = cell.toLocaleString('ko-KR'); td.classList.add('num');
           } else if (idx === idxCol) {
-            td.textContent = cell;
-            td.classList.add('idx');
+            td.textContent = cell; td.classList.add('idx');
           } else if (wc === 'col-xl' || wc === 'col-md') {
             const div = document.createElement('div');
-            div.className = 'cell-clamp';
-            div.textContent = cell;
-            div.title = String(cell);
+            div.className = 'cell-clamp'; div.textContent = cell; div.title = String(cell);
             td.appendChild(div);
-          } else {
-            td.textContent = cell;
-          }
+          } else { td.textContent = cell; }
           tr.appendChild(td);
         });
         bodyEl.appendChild(tr);
@@ -882,26 +580,19 @@
       document.getElementById('yearMsPanel').classList.remove('open');
       hideError('errorBanner');
       setLoading(true);
-
       try {
         const data = await loadData();
         const result = localSearchData(data, bizType, region, years);
         renderResults(result);
+        sendLog({ type: '기업조회', bizType, region, years: years.join(',') });
       } catch (e) {
         showError('errorBanner', '조회 실패: ' + e.message);
-      } finally {
-        setLoading(false);
-      }
+      } finally { setLoading(false); }
     }
 
     function renderResults(data) {
-      currentHeaders = data.headers;
-      currentRows = data.rows;
-
-      buildTable(currentHeaders, currentRows,
-        document.getElementById('headerRow'),
-        document.getElementById('bodyRows'));
-
+      currentHeaders = data.headers; currentRows = data.rows;
+      buildTable(currentHeaders, currentRows, document.getElementById('headerRow'), document.getElementById('bodyRows'));
       document.getElementById('resultCount').textContent = '검색 결과: ' + currentRows.length + '건';
       document.getElementById('resultCount').style.display = 'inline-block';
       document.getElementById('downloadBtn').disabled = currentRows.length === 0;
@@ -919,35 +610,52 @@
       const region = document.getElementById('regionSelect').value;
       const years = getSelectedYears();
       const yearLabel = years.includes('전체') ? '전체' : years.join('_');
-      const filename = '경기도형스마트공장_' + bizType + '_' + region + '_' + yearLabel + '.xlsx';
-      XLSX.writeFile(wb, filename);
+      XLSX.writeFile(wb, '경기도형스마트공장_' + bizType + '_' + region + '_' + yearLabel + '.xlsx');
     }
 
     // =====================================================
-    // 기업명 지원이력 조회
+    // 사업자번호 / 기업명 지원이력 조회
     // =====================================================
+    let bizSearchMode = 'no';
+
+    function switchTab(mode) {
+      bizSearchMode = mode;
+      document.getElementById('tabBizNo').classList.toggle('active', mode === 'no');
+      document.getElementById('tabBizName').classList.toggle('active', mode === 'name');
+      document.getElementById('inputBizNo').style.display = mode === 'no' ? 'flex' : 'none';
+      document.getElementById('inputBizName').style.display = mode === 'name' ? 'flex' : 'none';
+      hideError('bizErrorBanner');
+      document.getElementById('bizResultCount').style.display = 'none';
+      document.getElementById('bizTableWrap').style.display = 'none';
+      document.getElementById('bizEmptyState').style.display = 'block';
+    }
+
     async function searchByBiz() {
       hideError('bizErrorBanner');
       setBizLoading(true);
-
       try {
         const data = await loadData();
-        const input = document.getElementById('bizNameInput').value.trim();
-        if (!input) { alert('기업명을 입력해주세요.'); setBizLoading(false); return; }
         const bizRegion = LOCKED_REGION || document.getElementById('bizRegionSelect').value;
-        const result = localSearchByBizName(data, input, bizRegion);
+        let result, keyword = '';
+        if (bizSearchMode === 'no') {
+          keyword = document.getElementById('bizInput').value.trim();
+          if (!keyword) { alert('사업자번호를 입력해주세요.'); setBizLoading(false); return; }
+          result = localSearchByBizNo(data, keyword, bizRegion);
+          sendLog({ type: '사업자번호조회', region: bizRegion, keyword });
+        } else {
+          keyword = document.getElementById('bizNameInput').value.trim();
+          if (!keyword) { alert('기업명을 입력해주세요.'); setBizLoading(false); return; }
+          result = localSearchByBizName(data, keyword, bizRegion);
+          sendLog({ type: '기업명조회', region: bizRegion, keyword });
+        }
         renderBizResults(result);
       } catch (e) {
         showError('bizErrorBanner', '조회 실패: ' + e.message);
-      } finally {
-        setBizLoading(false);
-      }
+      } finally { setBizLoading(false); }
     }
 
     function renderBizResults(data) {
-      buildTable(data.headers, data.rows,
-        document.getElementById('bizHeaderRow'),
-        document.getElementById('bizBodyRows'));
+      buildTable(data.headers, data.rows, document.getElementById('bizHeaderRow'), document.getElementById('bizBodyRows'));
       document.getElementById('bizResultCount').textContent = '조회 결과: ' + data.rows.length + '건';
       document.getElementById('bizResultCount').style.display = 'inline-block';
       document.getElementById('bizEmptyState').style.display = 'none';
@@ -955,8 +663,10 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      const el = document.getElementById('bizNameInput');
-      if (el) el.addEventListener('keydown', function (e) { if (e.key === 'Enter') searchByBiz(); });
+      ['bizInput', 'bizNameInput'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('keydown', function (e) { if (e.key === 'Enter') searchByBiz(); });
+      });
     });
   </script>
 </body>
